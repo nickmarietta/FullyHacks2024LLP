@@ -31,12 +31,21 @@ def start_matching_game():
     # Positions and sizes for words
     word_boxes = []
     font = get_font(30)
+    box_color = (240, 0, 255)  # Magenta color for boxes
+    text_color = "Black"
+    padding = 10  # Padding around the text inside the box
+    outline_width = 5  # Width of the outline
+
     for index, word in enumerate(all_words):
         x = 100 + (index % 3) * 400  # Three columns of words
         y = 100 + (index // 3) * 100  # Row based on the word index
-        text_surface = font.render(word, True, "Black")
-        rect = text_surface.get_rect(center=(x, y))
-        word_boxes.append((word, rect))
+        text_surface = font.render(word, True, text_color)
+        text_rect = text_surface.get_rect(center=(x, y))
+        
+        # Expand rect for the background box based on padding
+        box_rect = text_rect.inflate(padding * 2, padding * 2)
+
+        word_boxes.append((word, text_rect, box_rect))
 
     selected_words = []
 
@@ -46,25 +55,39 @@ def start_matching_game():
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                for word, rect in word_boxes:
-                    if rect.collidepoint(event.pos):
+                for word, text_rect, box_rect in word_boxes:
+                    if box_rect.collidepoint(event.pos):  # Check collision with the box
                         selected_words.append(word)
                         if len(selected_words) == 2:
-                            # Check for match
-                            if selected_words[0] in english_words and selected_words[1] in spanish_words and english_words.index(selected_words[0]) == spanish_words.index(selected_words[1]):
+                            # Enhanced check for match
+                            match_found = False
+                            if selected_words[0] in english_words and selected_words[1] in spanish_words:
+                                if english_words.index(selected_words[0]) == spanish_words.index(selected_words[1]):
+                                    match_found = True
+                            elif selected_words[0] in spanish_words and selected_words[1] in english_words:
+                                if spanish_words.index(selected_words[0]) == english_words.index(selected_words[1]):
+                                    match_found = True
+                            
+                            if match_found:
                                 # Match found, remove words
                                 all_words.remove(selected_words[0])
                                 all_words.remove(selected_words[1])
+                            
                             selected_words = []
                             # Recreate word_boxes without matched words
-                            word_boxes = [(word, rect) for word, rect in word_boxes if word in all_words]
+                            word_boxes = [(word, text_rect, box_rect) for word, text_rect, box_rect in word_boxes if word in all_words]
 
         SCREEN.fill("white")
-        for word, rect in word_boxes:
-            text_surface = font.render(word, True, "Black")
-            SCREEN.blit(text_surface, rect)
+        for word, text_rect, box_rect in word_boxes:
+            # Draw the box outline
+            pygame.draw.rect(SCREEN, box_color, box_rect, outline_width)  # The last argument is the line thickness
+            # Then draw the text on top of the box
+            text_surface = font.render(word, True, text_color)
+            SCREEN.blit(text_surface, text_rect)
 
         pygame.display.update()
+
+
 
 def play():
     while True:
