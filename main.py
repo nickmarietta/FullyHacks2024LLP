@@ -50,6 +50,7 @@ def start_matching_game():
         word_boxes.append((word, text_rect, box_rect))
 
     selected_words = []
+    selected_word_index = None
 
     while running:
         for event in pygame.event.get():
@@ -100,7 +101,7 @@ def listen_game():
     playaudio_button.update(SCREEN)
     spanish_eng_words = [("Hola", "Hello"), ("Buenos días", "Good morning"), ("Buenas tardes", "Good afternoon"), ("Buenas noches", "Good night"), ("¿Cómo estás?", "How are you?"), ("¿Qué tal?", "How's it going?"), 
                      ("Por favor", "Please"), ("Gracias", "Thank you"), ("De nada", "You're welcome"), ("Lo siento", "I'm sorry"), ("Perdón", "Excuse me/pardon"), ("¿Cómo te llamas?", "What's your name?"), ("Me llamo", "My name is"), 
-                     ("¿Cuántos años tienes?", "How old are you?"), ("Tengo [Número] años", "I am [Number] years old"), ("Uno", "One"), ("Dos", "Two"), ("Tres", "Three"), ("Cuatro", "Four"), ("Cinco", "Five"), ("Seis", "Six"), ("Siete", "Seven"), 
+                     ("¿Cuántos años tienes?", "How old are you?"), ("Tengo algunos años", "I am some years old"), ("Uno", "One"), ("Dos", "Two"), ("Tres", "Three"), ("Cuatro", "Four"), ("Cinco", "Five"), ("Seis", "Six"), ("Siete", "Seven"), 
                      ("Ocho", "Eight"), ("Nueve", "Nine"), ("Diez", "Ten"), ("Hablar", "To speak"), ("Comer", "To eat"), ("Beber", "To drink"), ("Dormir", "To sleep"), ("Estudiar", "To study"), ("Trabajar", "To work"), ("Vivir", "To live"), ("Gustar", "To like"), 
                      ("Tener", "To have"), ("Ser", "To be (permanent)"), ("Feliz", "Happy"), ("Triste", "Sad"), ("Grande", "Big"), ("Pequeño", "Small"), ("Nuevo", "New"), ("Viejo", "Old"), ("Bonito", "Beautiful"), ("Feo", "Ugly"), ("Rápido", "Fast"), 
                      ("Lento", "Slow"), ("Desayunar", "To have breakfast"), ("Almorzar", "To have lunch"), ("Cenar", "To have dinner"), ("Ir", "To go"), ("Venir", "To come"), ("Comprar", "To buy"), ("Vender", "To sell"), ("Mirar", "To watch/look at"), 
@@ -113,8 +114,8 @@ def listen_game():
     active = False
 
     input_rect = pygame.Rect(550, 600, 140, 32)
-    color = pygame.Color("lightskyblue3")
-    color_passive = pygame.Color("gray15")
+    color = pygame.Color("black")
+    color_passive = pygame.Color("black")
     color = color_passive
 
     while running:
@@ -139,6 +140,7 @@ def listen_game():
                             pygame.mixer.init()
                             pygame.mixer.music.load(f"{fp.name}.mp3")
                             pygame.mixer.music.play()
+                    #exception handling for pygame mixer with tempfile
                     except Exception as e:
                         print(f"Error playing audio: {e}")
                 if input_rect.collidepoint(event.pos):
