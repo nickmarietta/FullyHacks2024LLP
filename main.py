@@ -8,12 +8,13 @@ SCREEN = pygame.display.set_mode((1280, 720))
 pygame.display.set_caption("El Aprendizaje")
 
 BG = pygame.image.load("neon2.jpg")
+PLAYBG = pygame.image.load("PLAY.jpg")
 
 def get_font(size): # Returns Press-Start-2P in the desired size
     return pygame.font.Font(None, size)
 
 def spec_font(size):
-    return pygame.font.Font('Fighting-Spirit-2.ttf', size)
+    return pygame.font.Font('blippo.ttf', size)
 
 def start_matching_game():
     # Game setup
@@ -69,23 +70,29 @@ def play():
     while True:
         PLAY_MOUSE_POS = pygame.mouse.get_pos()
 
-        SCREEN.fill("black")
+        SCREEN.blit(PLAYBG, (0, 0))
 
-        PLAY_TEXT = spec_font(65).render("Which gamemode would you like to play?", True, "White")
+        PLAY_TEXT = pygame.image.load("gamemodelogo.png")
         PLAY_RECT = PLAY_TEXT.get_rect(center=(640, 60))
         SCREEN.blit(PLAY_TEXT, PLAY_RECT)
 
         # matching button
-        MATCH_BUTTON = Button(image=None, pos=(640, 360), 
+        MATCH_BUTTON = Button(image=None, pos=(213, 630), 
                             text_input="Matching", font=spec_font(70), base_color="White", hovering_color="Green")
 
         MATCH_BUTTON.changeColor(PLAY_MOUSE_POS)
         MATCH_BUTTON.update(SCREEN)
 
+        # listen button
+        LISTEN_BUTTON = Button(image=None, pos=(639, 630), 
+                            text_input="Listen", font=spec_font(70), base_color="White", hovering_color="Green")
+
+        LISTEN_BUTTON.changeColor(PLAY_MOUSE_POS)
+        LISTEN_BUTTON.update(SCREEN)
 
         # back button
-        PLAY_BACK = Button(image=None, pos=(640, 560), 
-                            text_input="BACK", font=spec_font(70), base_color="White", hovering_color="Green")
+        PLAY_BACK = Button(image=None, pos=(1065, 630), 
+                            text_input="Back", font=spec_font(70), base_color="White", hovering_color="Green")
 
         PLAY_BACK.changeColor(PLAY_MOUSE_POS)
         PLAY_BACK.update(SCREEN)
