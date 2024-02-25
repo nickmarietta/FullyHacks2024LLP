@@ -13,11 +13,55 @@ PLAYBG = pygame.image.load("PLAY.jpg")
 LISTENBG = pygame.image.load("neoncity.jpg")
 MATCHBG = pygame.image.load("neonrain2.jpg")
 
+#Music for game
+
+pygame.mixer.music.load("music.mp3")
+
+pygame.mixer.music.set_volume(0.1)
+pygame.mixer.music.play(-1)
+
 def get_font(size):
     return pygame.font.Font(None, size)
 
 def spec_font(size):
     return pygame.font.Font('blippo.ttf', size)
+
+def translator():
+    while True:
+        translator_mouse_pos = pygame.mouse.get_pos()
+
+        SCREEN.fill((0, 0, 0))  # Fill the screen with white
+        TRANSLATOR = pygame.image.load("translogo.png")
+        COMING = pygame.image.load("coming_soon.png")
+
+
+        translator_rect = TRANSLATOR.get_rect(center=(640, 50))
+        SCREEN.blit(TRANSLATOR, translator_rect)
+
+        translator_button = Button(image=None, pos=(640, 230),
+                                    text_input="TRANSLATE", font=get_font(75), base_color="white", hovering_color=(0, 255, 255))
+        translator_button.changeColor(translator_mouse_pos)
+        translator_button.update(SCREEN)
+
+        TRANSLATOR_BACK = Button(image=None, pos=(640, 660),
+                              text_input="BACK", font=get_font(75), base_color="white", hovering_color="Green")
+
+        TRANSLATOR_BACK.update(SCREEN)
+
+        TRANSLATOR_COMING = Button(image=pygame.image.load("coming_soon.png"), pos=(640, 360),
+                              text_input="", font=get_font(75), base_color="Black", hovering_color="Green")
+        TRANSLATOR_COMING.update(SCREEN)
+
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if TRANSLATOR_BACK.checkForInput(translator_mouse_pos):
+                    main_menu()
+
+        pygame.display.update()
 
 current_game_state = "play"
 def start_matching_game():
@@ -26,9 +70,25 @@ def start_matching_game():
 
     running = True
 
-    word_pairs = [("Hello", "Hola"), ("Goodbye", "Adiós"), ("Thank you", "Gracias")]
-    english_words = [pair[0] for pair in word_pairs]
-    spanish_words = [pair[1] for pair in word_pairs]
+    # Lists for spanish and english words to be randomized
+    # Use Google Translate API later for better results instead of hard coding
+    spanish_eng_words1 = [("Hola", "Hello"), ("Buenos días", "Good morning"), ("Buenas tardes", "Good afternoon"), ("Buenas noches", "Good night"), ("¿Cómo estás?", "How are you?"), ("¿Qué tal?", "How's it going?")]
+    spanish_eng_words2 = [("Por favor", "Please"), ("Gracias", "Thank you"), ("De nada", "You're welcome"), ("Lo siento", "I'm sorry"), ("Perdón", "Excuse me/pardon"), ("¿Cómo te llamas?", "What's your name?")] 
+    spanish_eng_words3 = [("Me llamo", "My name is"), ("¿Cuántos años tienes?", "How old are you?"), ("Tengo algunos años", "I am some years old"), ("Uno", "One"), ("Dos", "Two"), ("Tres", "Three")]
+    spanish_eng_words4 = [("Cuatro", "Four"), ("Cinco", "Five"), ("Seis", "Six"), ("Siete", "Seven"), ("Ocho", "Eight"), ("Nueve", "Nine")] 
+    spanish_eng_words5 = [("Tener", "To have"), ("Ser", "To be (permanent)"), ("Feliz", "Happy"), ("Triste", "Sad"), ("Grande", "Big"), ("Pequeño", "Small")] 
+    spanish_eng_words6 = [("Lento", "Slow"), ("Desayunar", "To have breakfast"), ("Almorzar", "To have lunch"), ("Cenar", "To have dinner"), ("Ir", "To go"), ("Venir", "To come")] 
+    spanish_eng_words7 = [("Comprar", "To buy"), ("Vender", "To sell"), ("Mirar", "To watch/look at"), ("Escuchar", "To listen"), ("Leer", "To read"), ("Casa", "House/Home")] 
+    spanish_eng_words8 = [("Trabajo", "Work/Job"), ("Escuela", "School"), ("Tienda", "Store"), ("Restaurante", "Restaurant"), ("Parque", "Park"), ("Playa", "Beach")]
+    spanish_eng_words9 = [("Hospital", "Hospital"), ("Banco", "Bank"), ("Iglesia", "Church"), ("Ahora", "Now"), ("Hoy", "Today"), ("Mañana", "Tomorrow")]
+    spanish_eng_words10 = [("Nuevo", "New"), ("Viejo", "Old"), ("Bonito", "Beautiful"), ("Feo", "Ugly"), ("Rápido", "Fast")]
+    spanish_eng_words11 = [("Ayer", "Yesterday"), ("Semana", "Week"), ("Mes", "Month"), ("Año", "Year"), ("Hora", "Hour"), ("Minuto", "Minute")]
+    spanish_eng_words12 = [("Segundo", "Second"), ("Diez", "Ten"), ("Hablar", "To speak"), ("Comer", "To eat"), ("Beber", "To drink"), ("Dormir", "To sleep")]
+    spanish_eng_words13 = [("Estudiar", "To study"), ("Trabajar", "To work"), ("Vivir", "To live"), ("Gustar", "To like"), ("Caminar", "To walk"), ("To hack", "Hackear")]
+    ran_num = random.randint(1,13)
+    spanish_eng_words = eval(f"spanish_eng_words{ran_num}")
+    english_words = [pair[0] for pair in spanish_eng_words]
+    spanish_words = [pair[1] for pair in spanish_eng_words]
     all_words = english_words + spanish_words
     random.shuffle(all_words)
 
@@ -40,8 +100,8 @@ def start_matching_game():
     outline_width = 0
 
     for index, word in enumerate(all_words):
-        x = 100 + (index % 3) * 400
-        y = 100 + (index // 3) * 100
+        x = 200 + (index % 3) * 400
+        y = 50 + (index // 3) * 100
         text_surface = font.render(word, True, text_color)
         text_rect = text_surface.get_rect(center=(x, y))
         
@@ -50,7 +110,6 @@ def start_matching_game():
         word_boxes.append((word, text_rect, box_rect))
 
     selected_words = []
-    selected_word_index = None
 
     while running:
         for event in pygame.event.get():
@@ -89,10 +148,20 @@ def start_matching_game():
         
         pygame.display.update()
 
+def display_correct_message():
+    correct_msg = pygame.font.Font(None, 64).render("Correct!", True, "green")
+    msg_rect = correct_msg.get_rect(center=(640, 360)) 
+
+    SCREEN.fill("black") 
+    SCREEN.blit(correct_msg, msg_rect)
+    pygame.display.update()
+    pygame.time.delay(1500) 
+
+
 def listen_game():
-    # Game setup
+
     PLAY_MOUSE_POS = pygame.mouse.get_pos()
-    #SCREEN.fill("black")
+
     running = True
 
     playaudio_button = Button(image=None, pos=(635, 110), 
@@ -101,22 +170,22 @@ def listen_game():
     playaudio_button.update(SCREEN)
     spanish_eng_words = [("Hola", "Hello"), ("Buenos días", "Good morning"), ("Buenas tardes", "Good afternoon"), ("Buenas noches", "Good night"), ("¿Cómo estás?", "How are you?"), ("¿Qué tal?", "How's it going?"), 
                      ("Por favor", "Please"), ("Gracias", "Thank you"), ("De nada", "You're welcome"), ("Lo siento", "I'm sorry"), ("Perdón", "Excuse me/pardon"), ("¿Cómo te llamas?", "What's your name?"), ("Me llamo", "My name is"), 
-                     ("¿Cuántos años tienes?", "How old are you?"), ("Tengo algunos años", "I am some years old"), ("Uno", "One"), ("Dos", "Two"), ("Tres", "Three"), ("Cuatro", "Four"), ("Cinco", "Five"), ("Seis", "Six"), ("Siete", "Seven"), 
+                     ("¿Cuántos años tienes?", "How old are you?"), ("Tengo [Número] años", "I am [Number] years old"), ("Uno", "One"), ("Dos", "Two"), ("Tres", "Three"), ("Cuatro", "Four"), ("Cinco", "Five"), ("Seis", "Six"), ("Siete", "Seven"), 
                      ("Ocho", "Eight"), ("Nueve", "Nine"), ("Diez", "Ten"), ("Hablar", "To speak"), ("Comer", "To eat"), ("Beber", "To drink"), ("Dormir", "To sleep"), ("Estudiar", "To study"), ("Trabajar", "To work"), ("Vivir", "To live"), ("Gustar", "To like"), 
                      ("Tener", "To have"), ("Ser", "To be (permanent)"), ("Feliz", "Happy"), ("Triste", "Sad"), ("Grande", "Big"), ("Pequeño", "Small"), ("Nuevo", "New"), ("Viejo", "Old"), ("Bonito", "Beautiful"), ("Feo", "Ugly"), ("Rápido", "Fast"), 
                      ("Lento", "Slow"), ("Desayunar", "To have breakfast"), ("Almorzar", "To have lunch"), ("Cenar", "To have dinner"), ("Ir", "To go"), ("Venir", "To come"), ("Comprar", "To buy"), ("Vender", "To sell"), ("Mirar", "To watch/look at"), 
                      ("Escuchar", "To listen"), ("Leer", "To read"), ("Casa", "House/Home"), ("Trabajo", "Work/Job"), ("Escuela", "School"), ("Tienda", "Store"), ("Restaurante", "Restaurant"), ("Parque", "Park"), ("Playa", "Beach"), ("Hospital", "Hospital"), 
                      ("Banco", "Bank"), ("Iglesia", "Church"), ("Ahora", "Now"), ("Hoy", "Today"), ("Mañana", "Tomorrow"), ("Ayer", "Yesterday"), ("Semana", "Week"), ("Mes", "Month"), ("Año", "Year"), ("Hora", "Hour"), ("Minuto", "Minute"), ("Segundo", "Second")]
+    
     spanish_words = [pair[0] for pair in spanish_eng_words]
     english_words = [pair[1] for pair in spanish_eng_words]
     current_index = 0
     user_text = ""
     active = False
 
-    input_rect = pygame.Rect(550, 600, 140, 32)
-    color = pygame.Color("black")
-    color_passive = pygame.Color("black")
-    color = color_passive
+    input_rect = pygame.Rect(550, 480, 180, 40)
+
+    color_passive = pygame.Color("gray15")
 
     while running:
         PLAY_MOUSE_POS = pygame.mouse.get_pos()
@@ -133,14 +202,12 @@ def listen_game():
                     mytext = spanish_words[current_index]
                     language = 'es'
                     try:
-                        # use tempfile so file is not saved
                         with tempfile.NamedTemporaryFile(delete=True) as fp:
                             tts = gTTS(text=mytext, lang=language, slow=False)
                             tts.save(f"{fp.name}.mp3")
                             pygame.mixer.init()
                             pygame.mixer.music.load(f"{fp.name}.mp3")
                             pygame.mixer.music.play()
-                    #exception handling for pygame mixer with tempfile
                     except Exception as e:
                         print(f"Error playing audio: {e}")
                 if input_rect.collidepoint(event.pos):
@@ -152,6 +219,7 @@ def listen_game():
                 if active:
                     if event.key == pygame.K_RETURN:
                         if user_text.lower() == english_words[current_index].lower():
+                            display_correct_message()
                             print("Correct!")
                             current_index = (current_index + 1) % len(spanish_words)
                             user_text = "" 
@@ -163,8 +231,9 @@ def listen_game():
                     else:
                         user_text += event.unicode
 
-        pygame.draw.rect(SCREEN, color, input_rect, 2)
-        text_surface = pygame.font.Font(None, 32).render(user_text, True, (255, 255, 255))
+        pygame.draw.rect(SCREEN, "white", input_rect)
+        pygame.draw.rect(SCREEN, "white", input_rect, 2)
+        text_surface = pygame.font.Font(None, 32).render(user_text, True, "black")
         SCREEN.blit(text_surface, (input_rect.x + 5, input_rect.y + 5))
 
         pygame.display.update()
@@ -210,6 +279,7 @@ def play():
                 elif MATCH_BUTTON.checkForInput(PLAY_MOUSE_POS):
                     start_matching_game()
                 elif LISTEN_BUTTON.checkForInput(PLAY_MOUSE_POS):
+                    pygame.mixer.music.pause()
                     listen_game()
 
         pygame.display.update()
@@ -249,16 +319,18 @@ def main_menu():
         MAIN_MENU = Button(image=pygame.image.load("titlelogo.png"), pos=(640, 100), 
                             text_input="", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
 
-        PLAY_BUTTON = Button(image=pygame.image.load("playlogo.png"), pos=(640, 250), 
+        PLAY_BUTTON = Button(image=pygame.image.load("playlogo.png"), pos=(640, 280), 
                             text_input="", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
         OPTIONS_BUTTON = Button(image=pygame.image.load("optionsnew.png"), pos=(640, 400), 
                             text_input="", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
-        QUIT_BUTTON = Button(image=pygame.image.load("exit.png"), pos=(640, 550), 
+        QUIT_BUTTON = Button(image=pygame.image.load("exit.png"), pos=(640, 640), 
                             text_input="", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
+        TRANSLATOR_BUTTON = Button(image=pygame.image.load("translogo.png"), pos=(640, 525),
+                                   text_input="", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
 
         # SCREEN.blit(MENU_TEXT, MENU_RECT)
 
-        for button in [MAIN_MENU,PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
+        for button in [MAIN_MENU,PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON, TRANSLATOR_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
             button.update(SCREEN)
         
@@ -271,6 +343,8 @@ def main_menu():
                     play()
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
                     options()
+                if TRANSLATOR_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    translator()
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.quit()
                     sys.exit()
