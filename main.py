@@ -187,6 +187,11 @@ def listen_game():
 
     color_passive = pygame.Color("gray15")
 
+    BACK = Button(image=None, pos=(1065, 630), 
+                            text_input="Back", font=spec_font(70), base_color="White", hovering_color="Green")
+
+
+
     while running:
         PLAY_MOUSE_POS = pygame.mouse.get_pos()
         SCREEN.blit(LISTENBG, (0, 0))
@@ -198,6 +203,8 @@ def listen_game():
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
+                if BACK.checkForInput(PLAY_MOUSE_POS):
+                    play()
                 if playaudio_button.checkForInput(PLAY_MOUSE_POS):
                     mytext = spanish_words[current_index]
                     language = 'es'
@@ -235,6 +242,9 @@ def listen_game():
         pygame.draw.rect(SCREEN, "white", input_rect, 2)
         text_surface = pygame.font.Font(None, 32).render(user_text, True, "black")
         SCREEN.blit(text_surface, (input_rect.x + 5, input_rect.y + 5))
+
+        BACK.changeColor(PLAY_MOUSE_POS)
+        BACK.update(SCREEN)
 
         pygame.display.update()
 
